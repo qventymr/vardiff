@@ -1,6 +1,14 @@
-# vardiff
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/1b1f42f5-865d-4322-afb6-cc50fa689602">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/489ea684-549c-4a7a-8e6a-162213e408b9">
+    <img alt="vardiff"
+         src="https://github.com/user-attachments/assets/489ea684-549c-4a7a-8e6a-162213e408b9"
+         width="20%">
+  </picture>
 
-[English](README.md) | **Русский**
+[Документация](docs/API.md) | [Примеры](examples/) | [English](README.md) | **Русский** | [Изменения](CHANGELOG.md)
+</div>
 
 Header-only библиотека на C++20 для отслеживания выбранных полей объекта,
 сравнения независимых объектов и восстановления сохранённых состояний.
