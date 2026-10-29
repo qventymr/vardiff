@@ -246,6 +246,12 @@ JSON, or thread synchronization.
 The [CI workflow](.github/workflows/ci.yml) is configured for GCC, Clang,
 Apple Clang, MSVC, sanitizers, and an installed-package consumer.
 
+## AI Assistance
+
+AI-assisted tools were used during the development of VarDiff for code generation, refactoring, and documentation.
+
+All contributions are reviewed and tested before being merged.
+
 ## License
 
 Copyright 2026 Dmitry. Licensed under [Apache-2.0](LICENSE).
