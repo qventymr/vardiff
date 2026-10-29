@@ -778,7 +778,12 @@ void copy_only_custom_types_are_supported() {
     CHECK(changes[0].after.get<CopyOnly>().data == 2);
     CHECK(watcher.undo());
     CHECK(object.item.data == 1);
-    CHECK(watcher.history().size() == 2);
+    auto history = watcher.history();
+    CHECK(history.size() == 2);
+    CHECK(std::get<0>(history[0]).data == 1);
+    CHECK(std::get<0>(history[1]).data == 2);
+    std::get<0>(history[0]).data = 99;
+    CHECK(std::get<0>(watcher.history()[0]).data == 1);
 }
 
 void value_equality_printing_and_missing_values() {

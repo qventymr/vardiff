@@ -4,7 +4,7 @@
 
 Header-only библиотека на C++20 для отслеживания выбранных полей объекта,
 сравнения независимых объектов и восстановления сохранённых состояний.
-Внешних зависимостей нет. Версия 0.2 сохраняет API первоначального MVP.
+Внешних зависимостей нет.
 
 ## Сборка и проверка
 
@@ -19,10 +19,7 @@ ctest --test-dir build --output-on-failure
 ./build/vardiff_nested
 ```
 
-Тестовые исполняемые файлы проверяют 50 сценариев; CTest также запускает
-три примера. Тесты работают в Release и не зависят от assert.
-
-## Первоначальный API
+## Пример
 
 ```cpp
 #include <vardiff/vardiff.hpp>
@@ -69,7 +66,7 @@ int main() {
 
 ## Callbacks и poll()
 
-Продолжая пример с Player:
+Для нового объекта `Player player;`:
 
 ```cpp
 auto watcher = vardiff::track(
@@ -239,11 +236,9 @@ target_link_libraries(my_app PRIVATE vardiff::vardiff)
 При настройке потребителя передайте путь установки через
 `-DCMAKE_PREFIX_PATH=/путь/к/install`. Пакет допускает перенос каталога установки.
 
-## Разработка и лицензия
+## Лицензия
 
-Правила участия: [CONTRIBUTING.md](CONTRIBUTING.md). Изменения версии:
-[CHANGELOG.md](CHANGELOG.md). Подготовка публикации:
-[docs/RELEASING.md](docs/RELEASING.md).
+Изменения версий: [CHANGELOG.md](CHANGELOG.md).
 
 Copyright 2026 Dmitry. Лицензия [Apache-2.0](LICENSE); сведения об авторстве
 находятся в [NOTICE](NOTICE).

@@ -229,15 +229,12 @@ comparison is exact `operator==`, so NaN remains different even after a snapshot
 There is no background observation, automatic reflection, pointer-graph traversal,
 JSON, or thread synchronization.
 
-## Documentation and development
+## Documentation
 
 - [API contracts and exception behavior](docs/API.md)
 - [Performance notes and benchmark](docs/performance.md)
-- [Contributing](CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)
-- [Release procedure](docs/RELEASING.md)
 
-The test executables cover 50 scenarios; CTest also runs three examples.
 The [CI workflow](.github/workflows/ci.yml) is configured for GCC, Clang,
 Apple Clang, MSVC, sanitizers, and an installed-package consumer.
 

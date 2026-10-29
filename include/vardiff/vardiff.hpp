@@ -14,6 +14,7 @@
 #include <memory>
 #include <optional>
 #include <ostream>
+#include <ranges>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -110,7 +111,8 @@ public:
           print_([](std::ostream& stream, const std::any& data) {
               detail::print_value(stream, std::any_cast<const std::remove_cvref_t<T>&>(data));
           }),
-          equal_([](const std::any& a, const std::any& b) -> bool {
+          equal_([]([[maybe_unused]] const std::any& a,
+                    [[maybe_unused]] const std::any& b) -> bool {
               using Item = std::remove_cvref_t<T>;
               if constexpr (supported_type<Item>) {
                   return detail::equal_values(std::any_cast<const Item&>(a),
@@ -629,12 +631,11 @@ public:
 
     // Independent copies; values in each tuple follow field descriptor order.
     [[nodiscard]] std::vector<snapshot_type> history() const {
-        std::vector<snapshot_type> result;
-        result.reserve(history_.size());
-        for (const auto& saved : history_) {
-            result.push_back(*saved);
-        }
-        return result;
+        // A forward range constructs all copies without instantiating vector's
+        // reallocation/move path for snapshots containing copy-only values.
+        auto snapshots = std::views::transform(history_,
+            [](const auto& saved) -> const snapshot_type& { return *saved; });
+        return std::vector<snapshot_type>(snapshots.begin(), snapshots.end());
     }
 
     [[nodiscard]] std::size_t history_position() const noexcept { return cursor_; }

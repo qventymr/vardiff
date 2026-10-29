@@ -58,19 +58,3 @@ with history. Output includes ns/op and result checksums.
 
 This is a diagnostic benchmark. Compiler optimization, CPU, and system load affect
 results. CI uses deterministic behavior/copy-count checks, not timing thresholds.
-
-## Recorded optimization check
-
-One local run used GCC 15.2, C++20, Release (-O3, NDEBUG), 10,000 iterations,
-and a vector of 4096 integers. Both versions were 0.2 implementations; the comparison
-was before/after adding equal-subtree skipping, not against the original MVP.
-
-| Workload | Before, ns/op | After, ns/op |
-| --- | ---: | ---: |
-| Unchanged diff | 115655.1 | 1071.9 |
-| Last-element diff | 114901.3 | 7264.2 |
-| Changed integer poll | 109009.3 | 1535.3 |
-
-Checksums matched. The main saving was avoiding path construction for thousands
-of equal items. These numbers describe that workload and are not a performance
-guarantee for other types, shapes, or platforms.
