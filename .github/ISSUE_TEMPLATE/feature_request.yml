@@ -1,0 +1,17 @@
+name: Feature request
+description: Propose a focused improvement to vardiff.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Use case
+      description: Explain the problem you want to solve.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior or API
+      description: Include a small example and any alternatives you considered.
+    validations:
+      required: true

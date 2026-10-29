@@ -1,0 +1,17 @@
+/build*/
+/CMakeUserPresets.json
+/out/
+/install/
+/stage/
+/dist/
+/.cache/
+/.idea/
+/.vscode/
+/.vs/
+/.env
+/.env.*
+/.DS_Store
+Thumbs.db
+*.user
+*.swp
+*~
