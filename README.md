@@ -1,6 +1,14 @@
-# vardiff
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/1b1f42f5-865d-4322-afb6-cc50fa689602">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/489ea684-549c-4a7a-8e6a-162213e408b9">
+    <img alt="vardiff"
+         src="https://github.com/user-attachments/assets/489ea684-549c-4a7a-8e6a-162213e408b9"
+         width="20%">
+  </picture>
 
-**English** | [Русский](README.ru.md)
+[Documentation](docs/API.md) | [Examples](examples/) | **English** | [Русский](README.ru.md) | [Changelog](CHANGELOG.md)
+</div>
 
 A small header-only C++20 library for tracking selected object fields.
 Compare snapshots, receive deferred change callbacks, inspect container elements,
