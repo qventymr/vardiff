@@ -479,31 +479,31 @@ inline void append_quoted(std::string& path, std::string_view text) {
 
 template <typename Key>
 void append_map_key(std::string& path, const Key& key_value) {
-    path += '[';
-    if constexpr (std::same_as<Key, std::string> || std::same_as<Key, std::string_view>) {
-        append_quoted(path, key_value);
-    } else if constexpr (std::same_as<Key, bool>) {
-        path += key_value ? "true" : "false";
-    } else if constexpr (std::is_integral_v<Key>) {
-        char buffer[std::numeric_limits<Key>::digits10 + 4];
-        const auto converted = std::to_chars(std::begin(buffer), std::end(buffer), key_value);
-        path.append(buffer, converted.ptr);
-    } else if constexpr (std::is_enum_v<Key>) {
-        path.pop_back();
+    if constexpr (std::is_enum_v<Key>) {
         append_map_key(path, static_cast<std::underlying_type_t<Key>>(key_value));
-        return;
     } else {
-        static_assert(requires(std::ostream& stream) { stream << key_value; },
-                      "Map keys need operator<< to form diff paths");
-        std::ostringstream stream;
-        stream.imbue(std::locale::classic());
-        if constexpr (std::is_floating_point_v<Key>) {
-            stream.precision(std::numeric_limits<Key>::max_digits10);
+        path += '[';
+        if constexpr (std::same_as<Key, std::string> || std::same_as<Key, std::string_view>) {
+            append_quoted(path, key_value);
+        } else if constexpr (std::same_as<Key, bool>) {
+            path += key_value ? "true" : "false";
+        } else if constexpr (std::is_integral_v<Key>) {
+            char buffer[std::numeric_limits<Key>::digits10 + 4];
+            const auto converted = std::to_chars(std::begin(buffer), std::end(buffer), key_value);
+            path.append(buffer, converted.ptr);
+        } else {
+            static_assert(requires(std::ostream& stream) { stream << key_value; },
+                          "Map keys need operator<< to form diff paths");
+            std::ostringstream stream;
+            stream.imbue(std::locale::classic());
+            if constexpr (std::is_floating_point_v<Key>) {
+                stream.precision(std::numeric_limits<Key>::max_digits10);
+            }
+            stream << key_value;
+            append_quoted(path, stream.str());
         }
-        stream << key_value;
-        append_quoted(path, stream.str());
+        path += ']';
     }
-    path += ']';
 }
 
 template <typename T>
