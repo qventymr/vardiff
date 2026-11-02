@@ -196,6 +196,20 @@ baseline. Copy/allocation failure preserves the prior history and baseline.
 Restoration performs user-defined assignments: if one throws, the object may
 be partially restored while the history cursor stays unchanged.
 
+## Deep Diff Engine and maps
+
+`std::map<K, V>` and `std::unordered_map<K, V>` use native key lookup and recursive
+mapped-value comparison throughout the existing API. Paths use quoted escaped
+string keys or numeric keys. History restores existing mapped values recursively,
+adds missing entries and removes excess ones; ignored whole entries are preserved.
+Mapped registered types do not need `operator==`.
+
+`deep_diff(before, after, options, keys...)` reuses this traversal and additionally
+matches vector/array elements by identity and detects moves. Its result extends
+`change` with movement paths and indices. Previous watcher/free `diff()` sequence
+semantics stay index-based. See [Deep Diff API](DeepDiff.md) for options,
+duplicate-key rules, ownership, depth limits, paths and complexity.
+
 ## Floating-point values and scope
 
 Default comparison is exact equality: positive and negative zero compare equal,

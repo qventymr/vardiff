@@ -193,6 +193,31 @@ bool different = vardiff::changed(before, after, vardiff::field("hp", &Player::h
 For registered types, use `vardiff::diff(before, after)` and
 `vardiff::changed(before, after)`.
 
+## Deep Diff Engine
+
+`deep_diff()` adds sequence moves and identity matching to the shared recursive
+engine. It supports registered structures, `std::vector`, `std::array`,
+`std::map`, `std::unordered_map`, `std::optional`, and nested combinations.
+
+```cpp
+// Item and its schema are defined in examples/deep_diff.cpp.
+const std::vector<Item> before{{1, 10}, {2, 20}, {3, 30}};
+const std::vector<Item> after{{2, 20}, {3, 30}, {1, 12}};
+auto changes = vardiff::deep_diff(before, after, vardiff::key(&Item::id));
+// Move [0] -> [2], then [2].count: 10 -> 12.
+```
+
+`deep_options` controls moves, duplicate-key handling, ignored paths and maximum
+depth. Duplicate keys match in occurrence order by default, or can be rejected.
+Map paths include keys (`equipment["hand"].count`); nested sequence paths include
+destination indices (`inventory[2].count`). Moves carry source/destination paths
+and indices without copying the moved object. Existing `diff()` and watcher
+sequence behavior stays index-based; they also gain recursive map support.
+
+See [Deep Diff contracts and complexity](docs/DeepDiff.md),
+[the complete example](examples/deep_diff.cpp) and
+[benchmarks](docs/performance.md#deep-diff-benchmark).
+
 ## CMake integration
 
 Vendor the source and use:

@@ -13,5 +13,9 @@ int main() {
         changes[0].after.get<int>() != 2 || watcher.changed()) {
         return 1;
     }
+    const auto deep = vardiff::deep_diff(std::vector{1, 2}, std::vector{2, 1});
+    if (deep.size() != 1 || deep[0].kind != vardiff::change_kind::moved) {
+        return 1;
+    }
     return watcher.undo() && item.quantity == 1 ? 0 : 1;
 }

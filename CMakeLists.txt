@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(vardiff VERSION 0.2.0
-    DESCRIPTION "Header-only C++20 field change tracking and snapshots"
+    DESCRIPTION "Header-only C++20 deep diffs, field tracking and snapshots"
     LANGUAGES CXX)
 
 include(GNUInstallDirs)
@@ -43,7 +43,7 @@ endfunction()
 if(VARDIFF_BUILD_EXAMPLES)
     add_executable(vardiff_player examples/player.cpp)
     vardiff_configure_executable(vardiff_player)
-    foreach(example IN ITEMS events nested)
+    foreach(example IN ITEMS events nested deep_diff)
         add_executable(vardiff_${example} examples/${example}.cpp)
         vardiff_configure_executable(vardiff_${example})
     endforeach()
@@ -52,6 +52,8 @@ endif()
 if(VARDIFF_BUILD_BENCHMARKS)
     add_executable(vardiff_benchmark benchmarks/vardiff_benchmark.cpp)
     vardiff_configure_executable(vardiff_benchmark)
+    add_executable(vardiff_deep_benchmark benchmarks/deep_benchmark.cpp)
+    vardiff_configure_executable(vardiff_deep_benchmark)
 endif()
 
 if(VARDIFF_BUILD_TESTS)
@@ -64,10 +66,15 @@ if(VARDIFF_BUILD_TESTS)
     vardiff_configure_executable(vardiff_extended_tests)
     add_test(NAME vardiff_extended_tests COMMAND vardiff_extended_tests)
 
+    add_executable(vardiff_deep_tests tests/deep_tests.cpp)
+    vardiff_configure_executable(vardiff_deep_tests)
+    add_test(NAME vardiff_deep_tests COMMAND vardiff_deep_tests)
+
     if(VARDIFF_BUILD_EXAMPLES)
         add_test(NAME vardiff_player COMMAND vardiff_player)
         add_test(NAME vardiff_events COMMAND vardiff_events)
         add_test(NAME vardiff_nested COMMAND vardiff_nested)
+        add_test(NAME vardiff_deep_diff COMMAND vardiff_deep_diff)
     endif()
 endif()
 

@@ -58,3 +58,30 @@ with history. Output includes ns/op and result checksums.
 
 This is a diagnostic benchmark. Compiler optimization, CPU, and system load affect
 results. CI uses deterministic behavior/copy-count checks, not timing thresholds.
+
+## Deep Diff benchmark
+
+```sh
+cmake -S . -B build-bench -DCMAKE_BUILD_TYPE=Release -DVARDIFF_BUILD_BENCHMARKS=ON
+cmake --build build-bench --target vardiff_deep_benchmark
+./build-bench/vardiff_deep_benchmark 1000 4096
+```
+
+Arguments are positive iteration and element counts. Workloads cover unchanged
+and edited keyed vectors, rotation, reversal, duplicate identities, ordered and
+unordered maps, an unkeyed structured sequence (up to 128 entries), and a depth-129
+leaf edit. Every case prints ns/op and an event-count checksum. Try increasing
+sizes to observe scaling; no timing assertions are made.
+
+Hashable keys use expected linear matching, followed by O(k log k) LIS move
+selection. Matching borrows keys and elements; aligned FIFO key order skips index
+allocation. Unhashable identities use quadratic equality matching. Strict duplicate
+validation for equality-only keys can additionally cost O(n²+m²). Hash collisions
+can degrade lookup. Movement events carry metadata without copying whole values.
+The traversal reuses its source/destination path buffers and copies only emitted values and paths.
+Added/removed values are copied in full; use ordinary type copy semantics.
+
+Tests verify zero element/key copies for idle keyed comparisons and pure moves,
+and exactly two leaf copies for a modified scalar of an instrumented user type.
+Exhaustive permutations and a randomized edit oracle check move counts and paths
+independently of the implementation. [Full cost model](DeepDiff.md#cost-and-compatibility).
