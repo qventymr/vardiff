@@ -1,0 +1,64 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Publish website
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Validate JavaScript
+        run: node --check site/assets/site.js
+
+      - name: Read Pages settings
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '{build_type, source, html_url}'
+
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
+
+      - name: Verify published website
+        env:
+          SITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          base="${SITE_URL%/}"
+          curl --fail --silent --show-error --location --retry 5 --retry-delay 5 --retry-all-errors \
+            "${base}/?revision=${GITHUB_SHA}" --output /tmp/vardiff-index.html
+          python3 -c 'from pathlib import Path; assert "id=\"panel-deep\"" in Path("/tmp/vardiff-index.html").read_text()'
+          for path in ru/ assets/site.css assets/site.js assets/favicon.svg; do
+            curl --fail --silent --show-error --location --retry 5 --retry-delay 5 --retry-all-errors \
+              "${base}/${path}?revision=${GITHUB_SHA}" --output /dev/null
+          done

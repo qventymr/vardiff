@@ -7,7 +7,7 @@
          width="20%">
   </picture>
 
-[Документация](docs/API.md) | [Примеры](examples/) | [English](README.md) | **Русский** | [Изменения](CHANGELOG.md)
+[Сайт](https://qventymr.github.io/vardiff/ru/) | [Документация](docs/API.md) | [Примеры](examples/) | [English](README.md) | **Русский** | [Изменения](CHANGELOG.md)
 </div>
 
 Header-only библиотека на C++20 для отслеживания выбранных полей объекта,
