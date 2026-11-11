@@ -224,6 +224,24 @@ auto changes = vardiff::deep_diff(before, after, vardiff::key(&Item::id));
 [полный пример](examples/deep_diff.cpp),
 [benchmark](docs/performance.ru.md#benchmark-глубокого-сравнения).
 
+## Статистика изменений
+
+`summarize()` принимает готовый результат `diff()` или `deep_diff()`:
+
+```cpp
+const auto changes = vardiff::deep_diff(std::vector{1, 2, 3}, std::vector{2, 3, 1, 4});
+const auto stats = vardiff::summarize(changes);
+// stats.added == 1, stats.removed == 0, stats.modified == 0,
+// stats.moved == 1, stats.total == 2
+```
+
+Все пять счётчиков имеют тип `std::size_t`; для пустого результата они равны нулю.
+Считаются записи изменений: перемещение элемента с изменённым полем учитывается
+и как перемещение, и как модификация. Подсчёт выполняется за один проход без
+аллокаций, копирования значений и изменения входных данных или снимка наблюдателя.
+Подробнее: [контракт API](docs/API.ru.md#статистика-изменений) и
+[полный пример](examples/statistics.cpp), включающий также `diff()`.
+
 ## Подключение
 
 Скопируйте include/vardiff в свой каталог заголовков или используйте CMake:

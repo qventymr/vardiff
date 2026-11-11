@@ -192,6 +192,31 @@ struct deep_change : change {
     std::optional<std::size_t> new_index;
 };
 
+struct diff_statistics {
+    std::size_t added = 0;
+    std::size_t removed = 0;
+    std::size_t modified = 0;
+    std::size_t moved = 0;
+    std::size_t total = 0;
+};
+
+// Counts emitted records without copying values or comparing objects again.
+template <typename Change>
+    requires std::same_as<Change, change> || std::same_as<Change, deep_change>
+[[nodiscard]] diff_statistics summarize(const std::vector<Change>& changes) noexcept {
+    diff_statistics result;
+    result.total = changes.size();
+    for (const auto& item : changes) {
+        switch (item.kind) {
+        case change_kind::added: ++result.added; break;
+        case change_kind::removed: ++result.removed; break;
+        case change_kind::modified: ++result.modified; break;
+        case change_kind::moved: ++result.moved; break;
+        }
+    }
+    return result;
+}
+
 enum class duplicate_key_policy { match_in_order, reject };
 
 struct deep_options {

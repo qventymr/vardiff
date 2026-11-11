@@ -17,5 +17,11 @@ int main() {
     if (deep.size() != 1 || deep[0].kind != vardiff::change_kind::moved) {
         return 1;
     }
+    const auto flat_stats = vardiff::summarize(changes);
+    const auto deep_stats = vardiff::summarize(deep);
+    if (flat_stats.modified != 1 || flat_stats.total != 1 ||
+        deep_stats.moved != 1 || deep_stats.total != 1) {
+        return 1;
+    }
     return watcher.undo() && item.quantity == 1 ? 0 : 1;
 }

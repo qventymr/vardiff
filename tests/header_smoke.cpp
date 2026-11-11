@@ -10,5 +10,8 @@ bool header_smoke() {
     Item item;
     auto watcher = vardiff::track(item, vardiff::field("count", &Item::count));
     item.count = 2;
-    return watcher.changed() && watcher.diff().front().before.get<int>() == 1;
+    const auto changes = watcher.diff();
+    const auto stats = vardiff::summarize(changes);
+    return watcher.changed() && changes.front().before.get<int>() == 1 &&
+           stats.modified == 1 && stats.total == 1;
 }

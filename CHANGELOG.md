@@ -4,6 +4,10 @@
 
 ### Added
 
+- Diff Statistics: `summarize()` returns added, removed, modified, moved, and total
+  record counts for existing `diff()` and `deep_diff()` results without copying
+  values or changing comparison behavior; includes tests, an example, and
+  bilingual documentation.
 - Deep Diff Engine: `deep_diff()`, identity selectors through `key()`, minimum
   sequence move sets, FIFO/strict duplicate-key policies and bounded recursion.
 - Recursive `std::map`/`std::unordered_map` support shared by deep diffs,

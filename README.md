@@ -218,6 +218,24 @@ See [Deep Diff contracts and complexity](docs/DeepDiff.md),
 [the complete example](examples/deep_diff.cpp) and
 [benchmarks](docs/performance.md#deep-diff-benchmark).
 
+## Diff Statistics
+
+Use `summarize()` with an existing `diff()` or `deep_diff()` result:
+
+```cpp
+const auto changes = vardiff::deep_diff(std::vector{1, 2, 3}, std::vector{2, 3, 1, 4});
+const auto stats = vardiff::summarize(changes);
+// stats.added == 1, stats.removed == 0, stats.modified == 0,
+// stats.moved == 1, stats.total == 2
+```
+
+All five counters are `std::size_t`. An empty result produces zero counters.
+Statistics count emitted change records, so a moved element with a changed field
+counts as both a move and a modification. Summarizing takes one pass without
+allocations, value copies, or changes to the input or watcher baseline.
+See the [API contract](docs/API.md#diff-statistics) and the
+[complete example](examples/statistics.cpp), which also covers `diff()`.
+
 ## CMake integration
 
 Vendor the source and use:

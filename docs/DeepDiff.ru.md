@@ -25,6 +25,8 @@ const std::vector<Item> after{{2, 20}, {3, 30}, {1, 12}};
 const auto changes = vardiff::deep_diff(before, after, vardiff::key(&Item::id));
 // moved: from="[0]", name="[2]", old_index=0, new_index=2
 // modified: name="[2].count", before=10, after=12
+const auto stats = vardiff::summarize(changes);
+// stats.moved == 1, stats.modified == 1, stats.total == 2
 ```
 
 [Полный пример](../examples/deep_diff.cpp) содержит инвентарь с vector и
@@ -67,6 +69,9 @@ const auto changes = vardiff::deep_diff(before, after, vardiff::key(&Item::id));
 изменений. Элемент может входить в минимальный набор перемещений, даже если
 его исходный и конечный числовые индексы совпадают: учитывается порядок среди
 сохранившихся элементов.
+
+[`summarize()`](API.ru.md#статистика-изменений) подсчитывает добавления, удаления,
+модификации и перемещения без копирования значений и повторного сравнения.
 
 ## Ключи и перемещения
 

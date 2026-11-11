@@ -25,6 +25,8 @@ const std::vector<Item> after{{2, 20}, {3, 30}, {1, 12}};
 const auto changes = vardiff::deep_diff(before, after, vardiff::key(&Item::id));
 // moved: from="[0]", name="[2]", old_index=0, new_index=2
 // modified: name="[2].count", before=10, after=12
+const auto stats = vardiff::summarize(changes);
+// stats.moved == 1, stats.modified == 1, stats.total == 2
 ```
 
 See [the complete example](../examples/deep_diff.cpp) for an inventory containing
@@ -65,6 +67,9 @@ The events describe the two complete snapshots; they are **not an executable
 patch**. All indices refer to the original inputs, not intermediate mutation
 steps. An element can belong to the minimal move set even if its original and
 final numeric indices coincide: movement describes its ordering among survivors.
+
+Use [`summarize()`](API.md#diff-statistics) to count added, removed, modified,
+and moved records without copying their values or repeating the comparison.
 
 ## Sequence identity and moves
 

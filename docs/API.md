@@ -84,6 +84,39 @@ custom type has no general equality available in the value wrapper: comparing
 two such wrappers throws `std::logic_error`. The field-specific comparator is
 not stored inside each diff value.
 
+## Diff Statistics
+
+`vardiff::summarize(changes)` accepts a `const std::vector<change>&` or
+`const std::vector<deep_change>&`, including temporary results from free `diff()`,
+`watcher.diff()`, `poll()`, and `deep_diff()`. It returns `vardiff::diff_statistics`:
+
+| Member (`std::size_t`) | Meaning |
+| --- | --- |
+| `added` | Number of `change_kind::added` records |
+| `removed` | Number of `change_kind::removed` records |
+| `modified` | Number of `change_kind::modified` records |
+| `moved` | Number of `change_kind::moved` records |
+| `total` | Total number of records, equal to `changes.size()` |
+
+All counters default to zero. For library-produced results,
+`total == added + removed + modified + moved`. Existing `diff()` remains
+index-based, so its `moved` count is zero. Statistics count the supplied records,
+including any filtering or move-detection options already applied. A moved
+element with one modified leaf produces two records: one move and one modification.
+An added/removed structure counts once, regardless of how many fields it contains.
+
+The function is `[[nodiscard]]` and `noexcept`, takes O(n) time and O(1) extra
+space, and performs no allocations, value copies, or equality comparisons.
+It leaves the result, source objects, watcher baseline, history, and callbacks
+untouched. Calling `poll()` to obtain the input still has its usual effects.
+
+```cpp
+const auto stats = vardiff::summarize(watcher.diff());
+// stats.added, stats.removed, stats.modified, stats.moved, stats.total
+```
+
+See [examples/statistics.cpp](../examples/statistics.cpp) for both diff APIs.
+
 ## poll() sequencing
 
 1. Check for differences from the current baseline. If unchanged, return an empty
