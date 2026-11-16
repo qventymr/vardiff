@@ -13,5 +13,6 @@ bool header_smoke() {
     const auto changes = watcher.diff();
     const auto stats = vardiff::summarize(changes);
     return watcher.changed() && changes.front().before.get<int>() == 1 &&
-           stats.modified == 1 && stats.total == 1;
+           stats.modified == 1 && stats.total == 1 &&
+           vardiff::to_string(changes.front().kind) == "modified";
 }

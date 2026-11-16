@@ -89,6 +89,25 @@ value.type() возвращает `std::type_info` сохранённого ти
 типы и значения; для типа, сравнимого только через компаратор конкретного field(),
 он выбрасывает `std::logic_error`, поскольку этот компаратор в value не хранится.
 
+## Названия типов изменений
+
+`[[nodiscard]] constexpr std::string_view to_string(change_kind kind) noexcept`
+возвращает `"added"`, `"removed"`, `"modified"` или `"moved"` для соответствующего
+`vardiff::change_kind`. Для остальных значений enum возвращается `"unknown"`.
+Результат ссылается на строковый литерал со статическим временем жизни;
+выделение памяти и копирование значений изменений не требуются.
+Функция работает с результатами обоих вариантов сравнения:
+
+```cpp
+for (const auto& change : changes) {
+    std::cout << vardiff::to_string(change.kind)
+              << ": " << change.name << '\n';
+}
+```
+
+Для примера вывода подключите `<iostream>`.
+[Полный пример глубокого сравнения](../examples/deep_diff.cpp).
+
 ## Статистика изменений
 
 `vardiff::summarize(changes)` принимает `const std::vector<change>&` или

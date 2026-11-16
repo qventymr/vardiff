@@ -4,6 +4,8 @@
 
 ### Added
 
+- `to_string(change_kind)`: constexpr, allocation-free change kind names for
+  logging, with an `"unknown"` fallback for unrecognized enum values.
 - Diff Statistics: `summarize()` returns added, removed, modified, moved, and total
   record counts for existing `diff()` and `deep_diff()` results without copying
   values or changing comparison behavior; includes tests, an example, and

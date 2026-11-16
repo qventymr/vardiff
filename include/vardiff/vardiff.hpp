@@ -178,6 +178,16 @@ private:
 
 enum class change_kind { modified, added, removed, moved };
 
+[[nodiscard]] constexpr std::string_view to_string(change_kind kind) noexcept {
+    switch (kind) {
+    case change_kind::modified: return "modified";
+    case change_kind::added: return "added";
+    case change_kind::removed: return "removed";
+    case change_kind::moved: return "moved";
+    default: return "unknown";
+    }
+}
+
 struct change {
     std::string name;
     value before;

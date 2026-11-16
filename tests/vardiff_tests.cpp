@@ -69,6 +69,16 @@ static_assert(!can_track_player<const Player>);
 static_assert(!can_track_player<AllTypes&>);
 static_assert(!can_track_without_fields<Player>);
 
+static_assert(std::same_as<decltype(vardiff::to_string(vardiff::change_kind::added)),
+                           std::string_view>);
+static_assert(noexcept(vardiff::to_string(vardiff::change_kind::added)));
+static_assert(vardiff::to_string(vardiff::change_kind::added) == "added");
+static_assert(vardiff::to_string(vardiff::change_kind::removed) == "removed");
+static_assert(vardiff::to_string(vardiff::change_kind::modified) == "modified");
+static_assert(vardiff::to_string(vardiff::change_kind::moved) == "moved");
+static_assert(vardiff::to_string(static_cast<vardiff::change_kind>(-1)) == "unknown");
+static_assert(vardiff::to_string(static_cast<vardiff::change_kind>(999)) == "unknown");
+
 void initial_state_and_untracked_fields() {
     Player player;
     const auto watcher = vardiff::track(player, vardiff::field("hp", &Player::hp));
@@ -295,6 +305,36 @@ void streaming_values() {
     CHECK(formatted.str() == "1.250");
 }
 
+void logging_change_kinds() {
+    struct State {
+        int hp;
+        std::vector<int> inventory;
+        std::optional<int> selected;
+    };
+    const State before{100, {10}, 20};
+    const State after{75, {10, 30}, std::nullopt};
+    const auto changes = vardiff::diff(before, after,
+        vardiff::field("hp", &State::hp),
+        vardiff::field("inventory", &State::inventory),
+        vardiff::field("selected", &State::selected));
+    std::ostringstream stream;
+    for (const auto& change : changes) {
+        stream << vardiff::to_string(change.kind) << ": " << change.name << '\n';
+    }
+    CHECK(stream.str() == "modified: hp\nadded: inventory[1]\nremoved: selected\n");
+
+    const auto deep = vardiff::deep_diff(std::vector{1, 2, 3}, std::vector{2, 3, 1, 4});
+    std::ostringstream deep_stream;
+    for (const auto& change : deep) {
+        deep_stream << vardiff::to_string(change.kind) << ": " << change.name << '\n';
+    }
+    CHECK(deep_stream.str() == "moved: [2]\nadded: [3]\n");
+
+    std::ostringstream unknown_stream;
+    unknown_stream << vardiff::to_string(static_cast<vardiff::change_kind>(999));
+    CHECK(unknown_stream.str() == "unknown");
+}
+
 void wrong_value_type_throws() {
     const vardiff::value value(42);
     bool threw = false;
@@ -334,6 +374,7 @@ int main() {
         {"independent watcher copies", watcher_copies_have_independent_snapshots},
         {"floating point equality", exact_floating_point_equality},
         {"streaming values", streaming_values},
+        {"logging change kinds", logging_change_kinds},
         {"wrong value type", wrong_value_type_throws},
         {"null member pointer", null_member_pointer_is_rejected},
         {"multiple translation units", [] { CHECK(header_smoke()); }},

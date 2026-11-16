@@ -20,7 +20,9 @@ int main() {
     const auto flat_stats = vardiff::summarize(changes);
     const auto deep_stats = vardiff::summarize(deep);
     if (flat_stats.modified != 1 || flat_stats.total != 1 ||
-        deep_stats.moved != 1 || deep_stats.total != 1) {
+        deep_stats.moved != 1 || deep_stats.total != 1 ||
+        vardiff::to_string(changes[0].kind) != "modified" ||
+        vardiff::to_string(deep[0].kind) != "moved") {
         return 1;
     }
     return watcher.undo() && item.quantity == 1 ? 0 : 1;

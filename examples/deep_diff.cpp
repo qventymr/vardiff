@@ -28,8 +28,9 @@ int main() {
     const Inventory after{{{2, 20}, {3, 30}, {1, 12}}, {{"hand", Item{4, 2}}}};
     const auto changes = vardiff::deep_diff(before, after, vardiff::key(&Item::id));
     for (const auto& change : changes) {
+        std::cout << vardiff::to_string(change.kind) << ": ";
         if (change.kind == vardiff::change_kind::moved) {
-            std::cout << "moved: " << change.from << " -> " << change.name << '\n';
+            std::cout << change.from << " -> " << change.name << '\n';
         } else {
             std::cout << change.name << ": " << change.before << " -> " << change.after << '\n';
         }

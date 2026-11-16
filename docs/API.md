@@ -84,6 +84,24 @@ custom type has no general equality available in the value wrapper: comparing
 two such wrappers throws `std::logic_error`. The field-specific comparator is
 not stored inside each diff value.
 
+## Change kind names
+
+`[[nodiscard]] constexpr std::string_view to_string(change_kind kind) noexcept`
+returns `"added"`, `"removed"`, `"modified"`, or `"moved"` for the corresponding
+`vardiff::change_kind`. Other enum values return `"unknown"`.
+The returned view refers to a string literal with static lifetime; no allocation
+or copying of change values is needed. It works with both diff result types:
+
+```cpp
+for (const auto& change : changes) {
+    std::cout << vardiff::to_string(change.kind)
+              << ": " << change.name << '\n';
+}
+```
+
+Include `<iostream>` for this logging example. See the
+[complete deep diff example](../examples/deep_diff.cpp).
+
 ## Diff Statistics
 
 `vardiff::summarize(changes)` accepts a `const std::vector<change>&` or
